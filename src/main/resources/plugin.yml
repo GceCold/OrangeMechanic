@@ -1,0 +1,11 @@
+name: OrangeMechanic
+version: '${version}'
+main: ltd.icecold.orangeengine.OrangeMechanic
+api-version: 1.17
+authors: [ icecold ]
+description: Model Engine
+website: https://www.icecold.ltd
+depend: [MythicMobs,OrangeEngine]
+commands:
+  oe:
+    usage: /model help
