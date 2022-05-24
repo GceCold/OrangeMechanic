@@ -11,7 +11,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class OrangeMechanic extends JavaPlugin{
     @Override
     public void onEnable() {
-        Bukkit.getPluginManager().registerEvents(this,this);
         boolean isNewMM = false;
         try {
             Class.forName("io.lumine.mythic.api.skills.SkillResult");
