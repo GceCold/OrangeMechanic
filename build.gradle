@@ -1,30 +1,34 @@
-plugins {
-    id 'java'
-}
-
 group = 'ltd.icecold'
-version = '1.0.1-SNAPSHOT'
+version = '1.0.7-SNAPSHOT'
 
 repositories {
-    mavenCentral()
     maven {
-        name = 'spigotmc-repo'
-        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+        name = "Lumine Releases"
+        url = "https://mvn.lumine.io/repository/maven-public"
     }
     maven {
-        name = 'sonatype'
-        url = 'https://oss.sonatype.org/content/groups/public/'
+        name = "dmulloy2-repo"
+        url = "https://repo.dmulloy2.net/repository/public/"
+    }
+    maven {
+        url = "https://repo.unnamed.team/repository/unnamed-public/"
+    }
+    maven {
+        url = "https://repo.citizensnpcs.co/"
     }
 }
-
-dependencies {
-    compileOnly 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
-    compileOnly fileTree(dir: 'libs', include: ['*.jar'])
-    compileOnly project(':Bukkit-API')
-}
-
 
 def targetJavaVersion = 16
+
+dependencies {
+    compileOnly group: "com.comphenix.protocol", name: "ProtocolLib", version: "4.8.0";
+    compileOnly 'net.citizensnpcs:citizens-main:2.0.29-SNAPSHOT'
+    compileOnly fileTree(dir: 'libs', include: ['*.jar'])
+
+    compileOnly project(":engine-common")
+    compileOnly project(":engine-plugin")
+}
+
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion

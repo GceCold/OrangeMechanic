@@ -1,62 +1,56 @@
 package ltd.icecold.orangeengine.mythicmobs.v5.targeters;
 
 import com.google.common.collect.Sets;
-import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.api.adapters.AbstractLocation;
+import io.lumine.mythic.api.adapters.AbstractVector;
 import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.skills.SkillMetadata;
-import io.lumine.mythic.api.skills.SkillResult;
 import io.lumine.mythic.api.skills.placeholders.PlaceholderDouble;
 import io.lumine.mythic.api.skills.placeholders.PlaceholderString;
-import io.lumine.mythic.api.skills.targeters.IEntityTargeter;
-import io.lumine.mythic.bukkit.BukkitAdapter;
-import ltd.icecold.orangeengine.api.model.ModelEntity;
+import io.lumine.mythic.api.skills.targeters.ILocationTargeter;
 import ltd.icecold.orangeengine.api.model.ModelManager;
 import ltd.icecold.orangeengine.api.OrangeEngineAPI;
+import org.bukkit.ChatColor;
+import org.bukkit.util.Vector;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-public class TargeterModelPart implements IEntityTargeter {
-    private final PlaceholderString modelId;
-    private final PlaceholderString partId;
-    private final PlaceholderDouble x;
-    private final PlaceholderDouble y;
-    private final PlaceholderDouble z;
+public class TargeterModelPart implements ILocationTargeter {
+    private final String modelId;
+    private final String partId;
+    private final double x;
+    private final double y;
+    private final double z;
 
 
     public TargeterModelPart(MythicLineConfig mlc) {
-        this.modelId = mlc.getPlaceholderString(new String[]{"m", "mid", "model", "modelid"}, null);
-        this.partId = mlc.getPlaceholderString(new String[]{"p", "pid", "part", "partid"}, null);
-        this.x = mlc.getPlaceholderDouble("x", 0.0);
-        this.y = mlc.getPlaceholderDouble("y", 0.0);
-        this.z = mlc.getPlaceholderDouble("z", 0.0);
+        this.modelId = mlc.getString(new String[]{"m", "mid", "model", "modelid"});
+        this.partId = mlc.getString(new String[]{"p", "pid", "part", "partid"});
+        this.x = mlc.getDouble("x", 0.0);
+        this.y = mlc.getDouble("y", 0.0);
+        this.z = mlc.getDouble("z", 0.0);
     }
 
-
-
     @Override
-    public Collection<AbstractEntity> getEntities(SkillMetadata skillMetadata) {
-        AbstractEntity entity = skillMetadata.getCaster().getEntity();
+    public Collection<AbstractLocation> getLocations(SkillMetadata skillMetadata) {
         ModelManager modelManager = OrangeEngineAPI.getModelManager();
         if (modelManager != null) {
-            ModelEntity modelEntity = modelManager.getModelEntity(entity.getUniqueId());
-            if (modelEntity != null) {
-                if (!modelEntity.getModelData().modelName.equals(modelId.get())) {
-                    modelEntity.setModel(modelId.get());
+            if (modelManager.isModelCacheExists(modelId)) {
+                Collection<Vector> boneVector = modelManager.getBoneVector(modelId, partId);
+                if (boneVector != null && boneVector.size() > 0){
+                    Set<AbstractLocation> result = Sets.newHashSet();
+                    for (Vector vector : boneVector) {
+                        AbstractLocation clone = skillMetadata.getCaster().getLocation().clone();
+                        clone.add(new AbstractVector(vector.getX(),vector.getY(),vector.getZ()));
+                        clone.add(this.x,this.y,this.z);
+                        result.add(clone);
+                    }
+                    return result;
                 }
-                return entity.getBukkitEntity().getNearbyEntities(
-                                modelEntity.getModelData().boundingBox.width + this.x.get(),
-                                modelEntity.getModelData().boundingBox.height + this.y.get(),
-                                modelEntity.getModelData().boundingBox.width + this.z.get())
-                        .stream().map(BukkitAdapter::adapt)
-                        .collect(Collectors.toSet());
-
-//                ExtraBoneData extraBoneData = new ExtraBoneData();
-//                extraBoneData.translate = new Quaternion((float) this.x.get(), (float) this.y.get(), (float) this.z.get());
-//                modelEntity.addBoneExtraData(partId.get(), extraBoneData);
             }
         }
-        return Sets.newHashSet(entity);
+        return Sets.newHashSet();
     }
 }

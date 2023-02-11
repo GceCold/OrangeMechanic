@@ -3,9 +3,11 @@ version: '${version}'
 main: ltd.icecold.orangeengine.OrangeMechanic
 api-version: 1.17
 authors: [ icecold ]
-description: Model Engine
-website: https://www.icecold.ltd
-depend: [MythicMobs,OrangeEngine]
-commands:
-  oe:
-    usage: /model help
+description: Provide MythicMobs and CitizensNPC support for OrangeEngine
+website: https://www.icecold.ltd/
+depend:
+  - ProtocolLib
+  - MythicMobs
+  - OrangeEngine
+softdepend:
+  - Citizens

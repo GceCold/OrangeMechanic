@@ -16,28 +16,25 @@ import org.bukkit.entity.Entity;
 import java.util.UUID;
 
 public class MechanicModelState implements ITargetedEntitySkill {
-    private final PlaceholderString state;
-    private final PlaceholderString modelId;
+    private final String state;
+    private final String modelId;
 
     public MechanicModelState(CustomMechanic holder, MythicLineConfig mlc) {
-        this.state = mlc.getPlaceholderString(new String[]{"s", "state"}, null, new String[0]);
-        this.modelId = mlc.getPlaceholderString(new String[]{"m", "mid", "model", "modelid"}, null);
+        this.state = mlc.getString(new String[]{"s", "state"});
+        this.modelId = mlc.getString(new String[]{"m", "mid", "model", "modelid"});
     }
 
     @Override
     public SkillResult castAtEntity(SkillMetadata data, AbstractEntity target) {
-        if (this.state.get() == null && this.modelId.get() == null) {
-            return SkillResult.INVALID_CONFIG;
-        }
         ModelManager modelManager = OrangeEngineAPI.getModelManager();
         if (modelManager != null) {
-            if (!modelManager.getModelEntityMap().containsKey(target.getUniqueId())) {
+            if (!modelManager.getModelEntityMap().containsKey(target.getUniqueId()) && this.modelId != null && !"".equals(this.modelId)) {
                 Entity entity = BukkitAdapter.adapt(target);
-                modelManager.addNewModelEntity(entity.getUniqueId(), this.modelId.get());
+                modelManager.addNewModelEntity(entity.getUniqueId(), this.modelId);
             }
-            if (modelManager.getModelEntityMap().containsKey(target.getUniqueId())) {
+            if (modelManager.getModelEntityMap().containsKey(target.getUniqueId()) && this.state != null && !"".equals(state)) {
                 ModelEntity modelEntity = modelManager.getModelEntityMap().get(target.getUniqueId());
-                modelEntity.playAnimation(this.state.get());
+                modelEntity.playAnimation(this.state);
                 return SkillResult.SUCCESS;
             }
         }

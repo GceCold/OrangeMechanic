@@ -12,6 +12,7 @@ import io.lumine.mythic.core.skills.mechanics.CustomMechanic;
 
 import java.util.Iterator;
 
+import ltd.icecold.orangeengine.OrangeMechanic;
 import ltd.icecold.orangeengine.api.model.ModelEntity;
 import ltd.icecold.orangeengine.api.model.ModelManager;
 import ltd.icecold.orangeengine.api.OrangeEngineAPI;
@@ -20,40 +21,55 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class MechanicSubModel implements ITargetedEntitySkill {
-    private final PlaceholderString modelId;
-    private final PlaceholderString partId;
-    private final PlaceholderString sModelId;
-    private final PlaceholderString sPartId;
+    private String modelId;
+    private final String partId;
+    private String sModelId;
+    private final String sPartId;
     private final boolean remove;
 
     public MechanicSubModel(CustomMechanic holder, MythicLineConfig mlc) {
-        this.modelId = mlc.getPlaceholderString(new String[]{"m", "mid", "model", "modelid"}, null);
-        this.partId = mlc.getPlaceholderString(new String[]{"p", "pid", "part", "partid"}, null);
-        this.sModelId = mlc.getPlaceholderString(new String[]{"sm", "smid", "submodel", "submodelid"}, null);
-        this.sPartId = mlc.getPlaceholderString(new String[]{"sp", "spid", "subpart", "subpartid"}, null);
+        this.modelId = mlc.getString(new String[]{"m", "mid", "model", "modelid"});
+        this.partId = mlc.getString(new String[]{"p", "pid", "part", "partid"});
+        this.sModelId = mlc.getString(new String[]{"sm", "smid", "submodel", "submodelid"});
+        this.sPartId = mlc.getString(new String[]{"sp", "spid", "subpart", "subpartid"});
         this.remove = mlc.getBoolean(new String[]{"r", "remove"}, false);
     }
 
     @Override
     public SkillResult castAtEntity(SkillMetadata data, AbstractEntity target) {
-        String modelId = this.modelId.get(data, target);
-        String partId = this.partId.get(data, target);
-        String subModelId = this.sModelId.get(data, target);
-        String subPartId = this.sPartId.get(data, target);
-        if (modelId != null && partId != null && subPartId != null && subModelId != null) {
-            Entity entity = BukkitAdapter.adapt(target);
-            ModelManager modelManager = OrangeEngineAPI.getModelManager();
-            if (modelManager != null) {
-                ModelEntity modelEntity = modelManager.getModelEntity(entity.getUniqueId());
-                if (modelEntity != null) {
-                    if (!remove)
-                        modelEntity.addSubModel(subModelId, subPartId);
-                    else
-                        modelEntity.removeSubModel(subModelId, subPartId);
-                    return SkillResult.SUCCESS;
-                }
-            }
+        ModelManager modelManager = OrangeEngineAPI.getModelManager();
+        if (modelManager == null) {
+            return SkillResult.CONDITION_FAILED;
         }
-        return SkillResult.CONDITION_FAILED;
+
+        if (modelId == null || "".equals(modelId)) {
+            if (modelManager.getModelEntity(target.getUniqueId()) == null){
+                return SkillResult.CONDITION_FAILED;
+            }
+            modelId = modelManager.getModelEntity(target.getUniqueId()).getModelData().modelName;
+        }
+
+        if (sModelId == null || "".equals(sModelId)) {
+            sModelId = modelId;
+        }
+
+        if ((sPartId == null || "".equals(sPartId)) && !remove) {
+            OrangeMechanic.LOGGER.error("SubModel参数缺失subpart");
+            return SkillResult.INVALID_CONFIG;
+        }
+
+        ModelEntity modelEntity = modelManager.getModelEntity(target.getUniqueId());
+
+        if (modelEntity == null){
+            OrangeMechanic.LOGGER.error("未找到模型实体");
+            return SkillResult.INVALID_TARGET;
+        }
+
+        if (remove){
+            modelEntity.removeSubModel(modelId, sPartId);
+        }else {
+            modelEntity.addSubModel(partId, sModelId, sPartId);
+        }
+        return SkillResult.SUCCESS;
     }
 }

@@ -1,9 +1,11 @@
 package ltd.icecold.orangeengine.mythicmobs.listener;
 
-import io.lumine.mythic.bukkit.events.MythicMechanicLoadEvent;
-import io.lumine.mythic.bukkit.events.MythicTargeterLoadEvent;
+import io.lumine.mythic.bukkit.events.*;
+import ltd.icecold.orangeengine.api.OrangeEngineAPI;
+import ltd.icecold.orangeengine.api.model.ModelManager;
 import ltd.icecold.orangeengine.mythicmobs.v5.mechanics.*;
 import ltd.icecold.orangeengine.mythicmobs.v5.targeters.TargeterModelPart;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -11,28 +13,27 @@ import java.util.Locale;
 
 
 public class MythicListener_v5 implements Listener {
-//    @EventHandler
-//    public void onMythicMobSpawnEvent(MythicMobSpawnEvent event){
-//        Entity entity = event.getEntity();
-//        for (String skills : event.getMobType().getConfig().getStringList("Skills")) {
-//            if (skills.startsWith("model")){
-//                MythicLineConfig mlc = MythicLineConfig.of(skills);
-//                String modelId = mlc.getPlaceholderString(new String[] { "m", "mid", "model", "modelid" }, null).get();
-//            }
-//        }
-//    }
-//
-//    @EventHandler
-//    public void onMythicMobDespawnEvent(MythicMobDespawnEvent event){
-//        Entity entity = event.getEntity();
-//        for (String skills : event.getMobType().getConfig().getStringList("Skills")) {
-//            if (skills.startsWith("model")){
-//                MythicLineConfig mlc = MythicLineConfig.of(skills);
-//                String modelId = mlc.getPlaceholderString(new String[] { "m", "mid", "model", "modelid" }, null).get();
-//            }
-//        }
-//    }
+    @EventHandler
+    public void onMythicMobSpawnEvent(MythicMobSpawnEvent event){
+    }
 
+    @EventHandler
+    public void onMythicMobDespawnEvent(MythicMobDespawnEvent event){
+//        Entity entity = event.getEntity();
+//        ModelManager modelManager = OrangeEngineAPI.getModelManager();
+//        if (modelManager != null && modelManager.getModelEntityMap().containsKey(entity.getUniqueId())){
+//            modelManager.removeModelEntity(entity.getUniqueId(),false);
+//        }
+    }
+
+    @EventHandler
+    public void onMythicMobDeathEvent(MythicMobDeathEvent event){
+        Entity entity = event.getEntity();
+        ModelManager modelManager = OrangeEngineAPI.getModelManager();
+        if (modelManager != null && modelManager.getModelEntityMap().containsKey(entity.getUniqueId())){
+            modelManager.removeModelEntity(entity.getUniqueId(),false);
+        }
+    }
 
     @EventHandler
     public void onMythicMechanicLoadEvent(MythicMechanicLoadEvent event) {

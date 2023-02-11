@@ -21,23 +21,20 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 public class MechanicPetrify implements ITargetedEntitySkill {
-    private final PlaceholderString modelId;
+    private final String modelId;
 
     public MechanicPetrify(CustomMechanic holder, MythicLineConfig mlc) {
-        this.modelId = mlc.getPlaceholderString(new String[]{"m", "mid", "model", "modelid"}, null);
+        this.modelId = mlc.getString(new String[]{"m", "mid", "model", "modelid"});
     }
 
     public SkillResult castAtEntity(SkillMetadata data, AbstractEntity target) {
-        String model = this.modelId.get(data, target);
-        if (model != null) {
+        if (modelId != null && !"".equals(modelId)) {
             Entity entity = BukkitAdapter.adapt(target);
             ModelManager modelManager = OrangeEngineAPI.getModelManager();
-            if (modelManager != null && entity instanceof LivingEntity livingEntity) {
+            if (modelManager != null && entity instanceof LivingEntity livingEntity && modelManager.getModelEntityMap().containsKey(entity.getUniqueId()) && modelManager.getAllModelData().containsKey(modelId)) {
                 livingEntity.setAI(false);
                 ModelEntity modelEntity = modelManager.getModelEntity(entity.getUniqueId());
-                if (modelEntity != null) {
-                    modelEntity.inactive(modelId.get());
-                }
+                modelEntity.inactive(modelId);
                 return SkillResult.SUCCESS;
             }
         }

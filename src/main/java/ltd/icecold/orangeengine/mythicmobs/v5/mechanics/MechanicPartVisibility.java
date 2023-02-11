@@ -11,19 +11,17 @@ import io.lumine.mythic.core.skills.mechanics.CustomMechanic;
 import ltd.icecold.orangeengine.api.model.ModelEntity;
 import ltd.icecold.orangeengine.api.model.ModelManager;
 import ltd.icecold.orangeengine.api.OrangeEngineAPI;
-import ltd.icecold.orangeengine.api.model.data.bone.ExtraBoneData;
+import ltd.icecold.orangeengine.api.data.bone.ExtraBoneData;
 import org.bukkit.entity.Entity;
 
-import java.awt.*;
-
 public class MechanicPartVisibility implements ITargetedEntitySkill {
-    private final PlaceholderString modelId;
-    private final PlaceholderString partId;
+    private final String modelId;
+    private final String partId;
     private final boolean flag;
 
     public MechanicPartVisibility(CustomMechanic holder, MythicLineConfig mlc) {
-        this.modelId = mlc.getPlaceholderString(new String[]{"m", "mid", "model", "modelid"}, null);
-        this.partId = mlc.getPlaceholderString(new String[]{"p", "pid", "part", "partid"}, null);
+        this.modelId = mlc.getString(new String[]{"m", "mid", "model", "modelid"});
+        this.partId = mlc.getString(new String[]{"p", "pid", "part", "partid"});
         this.flag = mlc.getBoolean(new String[]{"v", "visible", "visibility"}, false);
     }
 
@@ -34,12 +32,12 @@ public class MechanicPartVisibility implements ITargetedEntitySkill {
         if (modelManager != null) {
             ModelEntity modelEntity = modelManager.getModelEntity(entity.getUniqueId());
             if (modelEntity != null) {
-                if (!modelEntity.getModelData().modelName.equals(modelId.get())) {
-                    modelEntity.setModel(modelId.get());
+                if (modelId != null && !"".equals(modelId) && modelManager.getAllModelData().containsKey(modelId) && !modelEntity.getModelData().modelName.equals(modelId)) {
+                    modelEntity.setModel(modelId);
                 }
                 ExtraBoneData extraBoneData = new ExtraBoneData();
                 extraBoneData.visible = flag;
-                modelEntity.addBoneExtraData(partId.get(), extraBoneData);
+                modelEntity.addBoneExtraData(partId, extraBoneData);
                 return SkillResult.SUCCESS;
             }
         }
