@@ -39,18 +39,20 @@ public class MythicListener_v5 implements Listener {
     public void onMythicMechanicLoadEvent(MythicMechanicLoadEvent event) {
         String name = event.getMechanicName();
         switch (name.toUpperCase(Locale.ENGLISH)) {
-            case "MODEL", "DISGUISE" ->                 event.register(new MechanicModel        (event.getContainer(), event.getConfig()));
-            case "STATE" ->                             event.register(new MechanicModelState   (event.getContainer(), event.getConfig()));
-            case "TINT" ->                              event.register(new MechanicTint         (event.getContainer(), event.getConfig()));
-            case "SWAPMODEL" ->                         event.register(new MechanicSwapModel    (event.getContainer(), event.getConfig()));
-            case "DEFAULTSTATE" ->                      event.register(new MechanicDefaultState (event.getContainer(), event.getConfig()));
-            case "CHANGEPART" ->                        event.register(new MechanicChangePart   (event.getContainer(), event.getConfig()));
-            case "SUBMODEL" ->                          event.register(new MechanicSubModel     (event.getContainer(), event.getConfig()));
-            case "PETRIFY" ->                           event.register(new MechanicPetrify      (event.getContainer(), event.getConfig()));
-            case "SETMODELTAG", "SETMODELTAGVISIBLE" -> event.register(new MechanicSetTag       (event.getContainer(), event.getConfig()));
-            case "UNDISGUISE" ->                        event.register(new MechanicUnDisguise   (event.getContainer(), event.getConfig()));
-            case "LOCKHEAD","LOCKMODELHEAD" ->          event.register(new MechanicLockHead     (event.getContainer(), event.getConfig()));
-            case "PARTVISIBILITY" ->                    event.register(new MechanicPartVisibility(event.getContainer(), event.getConfig()));
+            case "MODEL", "DISGUISE" ->                 event.register(new MechanicModel            (event.getContainer(), event.getConfig()));
+            case "STATE" ->                             event.register(new MechanicModelState       (event.getContainer(), event.getConfig()));
+            case "TINT" ->                              event.register(new MechanicTint             (event.getContainer(), event.getConfig()));
+            case "SWAPMODEL" ->                         event.register(new MechanicSwapModel        (event.getContainer(), event.getConfig()));
+            case "DEFAULTSTATE" ->                      event.register(new MechanicDefaultState     (event.getContainer(), event.getConfig()));
+            case "CHANGEPART" ->                        event.register(new MechanicChangePart       (event.getContainer(), event.getConfig()));
+            case "SUBMODEL" ->                          event.register(new MechanicSubModel         (event.getContainer(), event.getConfig()));
+            case "PETRIFY" ->                           event.register(new MechanicPetrify          (event.getContainer(), event.getConfig()));
+            case "SETMODELTAG", "SETMODELTAGVISIBLE" -> event.register(new MechanicSetTag           (event.getContainer(), event.getConfig()));
+            case "UNDISGUISE" ->                        event.register(new MechanicUnDisguise       (event.getContainer(), event.getConfig()));
+            case "LOCKHEAD","LOCKMODELHEAD" ->          event.register(new MechanicLockHead         (event.getContainer(), event.getConfig()));
+            case "PARTVISIBILITY" ->                    event.register(new MechanicPartVisibility   (event.getContainer(), event.getConfig()));
+            case "DISMOUNTMODEL","DISMOUNTALL" ->       event.register(new MechanicDismountModel    (event.getContainer(), event.getConfig()));
+            case "MOUNTMODEL" ->                        event.register(new MechanicMountModel       (event.getContainer(), event.getConfig()));
         }
     }
 

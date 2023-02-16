@@ -59,33 +59,33 @@ public class OrangeMechanic extends JavaPlugin implements Listener {
             CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(OrangeModelTrait.class).withName("model"));
         }
 
-//        protocolManager.addPacketListener(new PacketAdapter(this, ListenerPriority.HIGH, PacketType.Play.Client.STEER_VEHICLE) {
-//            @Override
-//            public void onPacketReceiving(PacketEvent event) {
-//                Player player = event.getPlayer();
-//                Entity vehicle = player.getVehicle();
-//                if (vehicle == null) {
-//                    return;
-//                }
-//                PacketContainer packet = event.getPacket();
-//                Float swSpeed = packet.getFloat().read(0);
-//                Float adSpeed = packet.getFloat().read(1);
-//                Boolean jumping = packet.getBooleans().read(0);
-//                Location playerLocation = player.getLocation();
-//                vehicle.setRotation(playerLocation.getYaw(),playerLocation.getPitch());
-//                Vector direction = playerLocation.getDirection();
-//                Vector sideways = direction.clone().crossProduct(new Vector(0, -1, 0));
-//                Vector total = direction.multiply(adSpeed / 10).add(sideways.multiply(swSpeed / 5));
-//
-//                List<MetadataValue> drive = vehicle.getMetadata("o_driver");
-//                if (vehicle instanceof LivingEntity entity){
-//                    entity.setGravity(false);
-//                }
-//                total.setY(jumping ? 0.5 : 0.0);
-//                if (!vehicle.isOnGround()) total.multiply(0.4);
-//                vehicle.setVelocity(vehicle.getVelocity().add(total));
-//            }
-//        });
+        protocolManager.addPacketListener(new PacketAdapter(this, ListenerPriority.HIGH, PacketType.Play.Client.STEER_VEHICLE) {
+            @Override
+            public void onPacketReceiving(PacketEvent event) {
+                if (event.isCancelled())
+                    return;
+
+                Player player = event.getPlayer();
+                Entity vehicle = player.getVehicle();
+                if (vehicle == null || !vehicle.hasMetadata("orange_driver")) {
+                    return;
+                }
+                PacketContainer packet = event.getPacket();
+                Float swSpeed = packet.getFloat().read(0);
+                Float adSpeed = packet.getFloat().read(1);
+                Boolean jumping = packet.getBooleans().read(0);
+
+                Location playerLocation = player.getLocation();
+                vehicle.setRotation(playerLocation.getYaw(),playerLocation.getPitch());
+                Vector direction = playerLocation.getDirection();
+                Vector sideways = direction.clone().crossProduct(new Vector(0, -1, 0));
+                Vector total = direction.multiply(adSpeed / 10).add(sideways.multiply(swSpeed / 5));
+
+                total.setY(jumping && vehicle.isOnGround() ? 0.5 : 0.0);
+                if (!vehicle.isOnGround()) total.multiply(0.4);
+                vehicle.setVelocity(vehicle.getVelocity().add(total));
+            }
+        });
 
     }
 
@@ -93,7 +93,6 @@ public class OrangeMechanic extends JavaPlugin implements Listener {
     public void onDisable() {
         super.onDisable();
     }
-
 
 
     @EventHandler
