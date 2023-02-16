@@ -10,13 +10,17 @@ import io.lumine.mythic.core.skills.mechanics.CustomMechanic;
 import ltd.icecold.orangeengine.api.OrangeEngineAPI;
 import ltd.icecold.orangeengine.api.model.ModelEntity;
 import ltd.icecold.orangeengine.api.model.ModelManager;
+import ltd.icecold.orangeengine.core.OrangeEngine;
+import org.bukkit.metadata.FixedMetadataValue;
 
 public class MechanicMountModel implements ITargetedEntitySkill {
 
     private String pbone;
+    private String mode;
 
     public MechanicMountModel(CustomMechanic holder, MythicLineConfig mlc) {
         this.pbone = mlc.getString(new String[]{"p", "pbone"});
+        this.mode = mlc.getString(new String[]{"m", "mode"},"Walking");
     }
 
     @Override
@@ -36,6 +40,7 @@ public class MechanicMountModel implements ITargetedEntitySkill {
             modelEntity.setSeatBone(seat);
         }
 
+        model.setMetadata("orange_driver", new FixedMetadataValue(OrangeEngine.getInstance(), mode != null ? mode : "Walking"));
         if (modelEntity.getSeatBone().size() > 0){
             for (String seat : modelEntity.getSeatBone()) {
                 if (!modelEntity.getMountEntity().containsKey(seat)){

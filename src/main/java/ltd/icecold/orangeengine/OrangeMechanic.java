@@ -10,6 +10,7 @@ import ltd.icecold.orangeengine.api.event.PluginVerifyPostEvent;
 import ltd.icecold.orangeengine.api.model.ModelManager;
 import ltd.icecold.orangeengine.citizen.OrangeModelTrait;
 import ltd.icecold.orangeengine.mythicmobs.listener.MythicListener_v5;
+import ltd.icecold.orangeengine.packet.DrivePacket;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
@@ -25,6 +26,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
@@ -33,9 +35,11 @@ import java.util.List;
 public class OrangeMechanic extends JavaPlugin implements Listener {
     private ProtocolManager protocolManager;
     public static final Logger LOGGER = LogManager.getLogger("OrangeMechanic");
+    public static OrangeMechanic instance;
 
     @Override
     public void onEnable() {
+        instance = this;
         protocolManager = ProtocolLibrary.getProtocolManager();
         if (!Bukkit.getPluginManager().getPlugin("OrangeEngine").isEnabled()) {
             Bukkit.getConsoleSender().sendMessage("§6[§eOrangeMechanic§6] > §c未找到§eOrangeEngine");
@@ -59,34 +63,7 @@ public class OrangeMechanic extends JavaPlugin implements Listener {
             CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(OrangeModelTrait.class).withName("model"));
         }
 
-        protocolManager.addPacketListener(new PacketAdapter(this, ListenerPriority.HIGH, PacketType.Play.Client.STEER_VEHICLE) {
-            @Override
-            public void onPacketReceiving(PacketEvent event) {
-                if (event.isCancelled())
-                    return;
-
-                Player player = event.getPlayer();
-                Entity vehicle = player.getVehicle();
-                if (vehicle == null || !vehicle.hasMetadata("orange_driver")) {
-                    return;
-                }
-                PacketContainer packet = event.getPacket();
-                Float swSpeed = packet.getFloat().read(0);
-                Float adSpeed = packet.getFloat().read(1);
-                Boolean jumping = packet.getBooleans().read(0);
-
-                Location playerLocation = player.getLocation();
-                vehicle.setRotation(playerLocation.getYaw(),playerLocation.getPitch());
-                Vector direction = playerLocation.getDirection();
-                Vector sideways = direction.clone().crossProduct(new Vector(0, -1, 0));
-                Vector total = direction.multiply(adSpeed / 10).add(sideways.multiply(swSpeed / 5));
-
-                total.setY(jumping && vehicle.isOnGround() ? 0.5 : 0.0);
-                if (!vehicle.isOnGround()) total.multiply(0.4);
-                vehicle.setVelocity(vehicle.getVelocity().add(total));
-            }
-        });
-
+        protocolManager.addPacketListener(new DrivePacket());
     }
 
     @Override
