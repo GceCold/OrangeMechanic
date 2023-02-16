@@ -24,12 +24,8 @@ public class MechanicMountModel extends SkillMechanic implements ITargetedEntity
 
     @Override
     public SkillResult castAtEntity(SkillMetadata data, AbstractEntity target) {
-        Entity bukkitTarget = BukkitAdapter.adapt(target);
-        bukkitTarget.sendMessage("Mount Test");
-        System.out.println("mount");
         AbstractEntity model = data.getCaster().getEntity();
         ModelManager modelManager = OrangeEngineAPI.getModelManager();
-        System.out.println(model.getBukkitEntity().getCustomName()+"   "+bukkitTarget.getCustomName());
 
         if (modelManager == null)
             return SkillResult.ERROR;
@@ -57,9 +53,5 @@ public class MechanicMountModel extends SkillMechanic implements ITargetedEntity
         }
 
         return SkillResult.CONDITION_FAILED;
-    }
-
-    public ThreadSafetyLevel getThreadSafetyLevel() {
-        return ThreadSafetyLevel.SYNC_ONLY;
     }
 }
