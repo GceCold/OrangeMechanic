@@ -5,20 +5,17 @@ import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.skills.ITargetedEntitySkill;
 import io.lumine.mythic.api.skills.SkillMetadata;
 import io.lumine.mythic.api.skills.SkillResult;
-import io.lumine.mythic.api.skills.ThreadSafetyLevel;
 import io.lumine.mythic.api.skills.placeholders.PlaceholderString;
-import io.lumine.mythic.bukkit.BukkitAdapter;
-import io.lumine.mythic.core.skills.SkillMechanic;
 import io.lumine.mythic.core.skills.mechanics.CustomMechanic;
 import ltd.icecold.orangeengine.api.OrangeEngineAPI;
 import ltd.icecold.orangeengine.api.model.ModelEntity;
 import ltd.icecold.orangeengine.api.model.ModelManager;
-import org.bukkit.entity.Entity;
 
-public class MechanicMountModel extends SkillMechanic implements ITargetedEntitySkill {
+public class MechanicMountModel implements ITargetedEntitySkill {
+
     private String pbone;
+
     public MechanicMountModel(CustomMechanic holder, MythicLineConfig mlc) {
-        super(holder.getManager(),holder.getConfigLine(),mlc);
         this.pbone = mlc.getString(new String[]{"p", "pbone"});
     }
 
@@ -31,7 +28,6 @@ public class MechanicMountModel extends SkillMechanic implements ITargetedEntity
             return SkillResult.ERROR;
 
         ModelEntity modelEntity = modelManager.getModelEntity(model.getUniqueId());
-
         if (modelEntity == null)
             return SkillResult.INVALID_TARGET;
 
