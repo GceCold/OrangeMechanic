@@ -5,17 +5,13 @@ import io.lumine.mythic.api.adapters.AbstractLocation;
 import io.lumine.mythic.api.adapters.AbstractVector;
 import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.skills.SkillMetadata;
-import io.lumine.mythic.api.skills.placeholders.PlaceholderDouble;
-import io.lumine.mythic.api.skills.placeholders.PlaceholderString;
 import io.lumine.mythic.api.skills.targeters.ILocationTargeter;
-import ltd.icecold.orangeengine.api.model.ModelManager;
 import ltd.icecold.orangeengine.api.OrangeEngineAPI;
-import org.bukkit.ChatColor;
+import ltd.icecold.orangeengine.api.model.ModelManager;
 import org.bukkit.util.Vector;
 
 import java.util.Collection;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class TargeterModelPart implements ILocationTargeter {
     private final String modelId;
@@ -36,21 +32,20 @@ public class TargeterModelPart implements ILocationTargeter {
     @Override
     public Collection<AbstractLocation> getLocations(SkillMetadata skillMetadata) {
         ModelManager modelManager = OrangeEngineAPI.getModelManager();
-        if (modelManager != null) {
-            if (modelManager.isModelCacheExists(modelId)) {
-                Collection<Vector> boneVector = modelManager.getBoneVector(modelId, partId);
-                if (boneVector != null && boneVector.size() > 0){
-                    Set<AbstractLocation> result = Sets.newHashSet();
-                    for (Vector vector : boneVector) {
-                        AbstractLocation clone = skillMetadata.getCaster().getLocation().clone();
-                        clone.add(new AbstractVector(vector.getX(),vector.getY(),vector.getZ()));
-                        clone.add(this.x,this.y,this.z);
-                        result.add(clone);
-                    }
-                    return result;
-                }
-            }
+        Set<AbstractLocation> result = Sets.newHashSet();
+        if (modelManager == null) return result;
+        if (!modelManager.isModelCacheExists(modelId)) return result;
+
+        Collection<Vector> boneVector = modelManager.getBoneVector(modelId, partId);
+        if (boneVector == null || boneVector.isEmpty()) return result;
+
+        for (Vector vector : boneVector) {
+            AbstractLocation clone = skillMetadata.getCaster().getLocation().clone();
+            clone.add(new AbstractVector(vector.getX(), vector.getY(), vector.getZ()));
+            clone.add(this.x, this.y, this.z);
+            result.add(clone);
         }
-        return Sets.newHashSet();
+
+        return result;
     }
 }

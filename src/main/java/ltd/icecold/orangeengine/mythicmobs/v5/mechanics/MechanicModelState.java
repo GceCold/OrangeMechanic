@@ -18,10 +18,12 @@ import java.util.UUID;
 public class MechanicModelState implements ITargetedEntitySkill {
     private final String state;
     private final String modelId;
+    private final boolean immediately;
 
     public MechanicModelState(CustomMechanic holder, MythicLineConfig mlc) {
         this.state = mlc.getString(new String[]{"s", "state"});
         this.modelId = mlc.getString(new String[]{"m", "mid", "model", "modelid"});
+        this.immediately = mlc.getBoolean(new String[]{"n","now"},false);
     }
 
     @Override
@@ -34,7 +36,11 @@ public class MechanicModelState implements ITargetedEntitySkill {
             }
             if (modelManager.getModelEntityMap().containsKey(target.getUniqueId()) && this.state != null && !"".equals(state)) {
                 ModelEntity modelEntity = modelManager.getModelEntityMap().get(target.getUniqueId());
-                modelEntity.playAnimation(this.state);
+                if (!immediately) {
+                    modelEntity.playAnimation(this.state);
+                }else {
+                    modelEntity.setAnimation(this.state);
+                }
                 return SkillResult.SUCCESS;
             }
         }

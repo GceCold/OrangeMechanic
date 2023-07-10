@@ -41,9 +41,9 @@ public class   MechanicDefaultState implements ITargetedEntitySkill {
                 modelManager.addNewModelEntity(target.getUniqueId(), this.modelId);
             }
             ModelEntity modelEntity = modelManager.getModelEntityMap().get(target.getUniqueId());
-            if (modelId != null && !"".equals(modelId) && !modelEntity.getModelData().modelName.equals(modelId)) {
-                modelEntity.setModel(modelId);
-            }
+//            if (modelId != null && !"".equals(modelId) && !modelEntity.getModelData().modelName.equals(modelId)) {
+//                modelEntity.setModel(modelId);
+//            }
             modelEntity.setDefaultState(AnimationType.valueOf(type.toUpperCase(Locale.ROOT)), state);
             return SkillResult.SUCCESS;
         }

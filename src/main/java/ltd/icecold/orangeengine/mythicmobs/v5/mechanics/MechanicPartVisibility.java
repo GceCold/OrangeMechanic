@@ -32,9 +32,9 @@ public class MechanicPartVisibility implements ITargetedEntitySkill {
         if (modelManager != null) {
             ModelEntity modelEntity = modelManager.getModelEntity(entity.getUniqueId());
             if (modelEntity != null) {
-                if (modelId != null && !"".equals(modelId) && modelManager.getAllModelData().containsKey(modelId) && !modelEntity.getModelData().modelName.equals(modelId)) {
-                    modelEntity.setModel(modelId);
-                }
+//                if (modelId != null && !"".equals(modelId) && modelManager.getAllModelData().containsKey(modelId) && !modelEntity.getModelData().modelName.equals(modelId)) {
+//                    modelEntity.setModel(modelId);
+//                }
                 ExtraBoneData extraBoneData = new ExtraBoneData();
                 extraBoneData.visible = flag;
                 modelEntity.addBoneExtraData(partId, extraBoneData);

@@ -11,16 +11,11 @@ import ltd.icecold.orangeengine.api.model.ModelEntity;
 import ltd.icecold.orangeengine.api.model.ModelManager;
 
 public class MechanicDismountAll implements ITargetedEntitySkill {
-
-    private String pbone;
-
     public MechanicDismountAll(CustomMechanic holder, MythicLineConfig mlc) {
-        this.pbone = mlc.getString(new String[]{"p", "pbone"});
     }
 
     @Override
     public SkillResult castAtEntity(SkillMetadata data, AbstractEntity target) {
-
         AbstractEntity model = data.getCaster().getEntity();
         ModelManager modelManager = OrangeEngineAPI.getModelManager();
         if (modelManager == null)
@@ -30,13 +25,8 @@ public class MechanicDismountAll implements ITargetedEntitySkill {
         if (modelEntity == null)
             return SkillResult.INVALID_TARGET;
 
-        if (this.pbone != null && !this.pbone.equals("")) {
-            for (String seat : this.pbone.trim().split(",")) {
-                modelEntity.dismountSeat(seat);
-            }
-            return SkillResult.SUCCESS;
-        }
+        modelEntity.dismountAll();
 
-        return SkillResult.CONDITION_FAILED;
+        return SkillResult.SUCCESS;
     }
 }

@@ -51,7 +51,8 @@ public class MythicListener_v5 implements Listener {
             case "UNDISGUISE" ->                        event.register(new MechanicUnDisguise       (event.getContainer(), event.getConfig()));
             case "LOCKHEAD","LOCKMODELHEAD" ->          event.register(new MechanicLockHead         (event.getContainer(), event.getConfig()));
             case "PARTVISIBILITY" ->                    event.register(new MechanicPartVisibility   (event.getContainer(), event.getConfig()));
-            case "DISMOUNTMODEL","DISMOUNTALL" ->       event.register(new MechanicDismountModel    (event.getContainer(), event.getConfig()));
+            case "DISMOUNTMODEL" ->                     event.register(new MechanicDismountModel    (event.getContainer(), event.getConfig()));
+            case "DISMOUNTALL" ->                       event.register(new MechanicDismountAll      (event.getContainer(), event.getConfig()));
             case "MOUNTMODEL" ->                        event.register(new MechanicMountModel       (event.getContainer(), event.getConfig()));
         }
     }

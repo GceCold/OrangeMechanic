@@ -1,5 +1,5 @@
 group = 'ltd.icecold'
-version = '1.0.7-SNAPSHOT'
+version = '1.0.8-SNAPSHOT'
 
 repositories {
     maven {
@@ -23,6 +23,7 @@ def targetJavaVersion = 16
 dependencies {
     compileOnly group: "com.comphenix.protocol", name: "ProtocolLib", version: "4.8.0";
     compileOnly 'net.citizensnpcs:citizens-main:2.0.29-SNAPSHOT'
+    compileOnly 'io.lumine:Mythic-Dist:5.2.3-SNAPSHOT'
     compileOnly fileTree(dir: 'libs', include: ['*.jar'])
 
     compileOnly project(":engine-common")
