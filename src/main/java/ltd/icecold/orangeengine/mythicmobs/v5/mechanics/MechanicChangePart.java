@@ -36,7 +36,7 @@ public class MechanicChangePart implements ITargetedEntitySkill {
                 OrangeMechanic.LOGGER.error("技能参数配置错误");
                 return SkillResult.INVALID_CONFIG;
             }
-            if (!modelManager.getModelEntityMap().containsKey(target.getUniqueId()) && modelId != null) {
+            if (!modelManager.getModelEntityMap().containsKey(target.getBukkitEntity().getUniqueId()) && modelId != null) {
                 modelManager.addNewModelEntity(target.getBukkitEntity().getUniqueId(), this.modelId);
             }
             if (newModelId == null){
